@@ -1,0 +1,9 @@
+name: RoyalBounty
+version: '${project.version}'
+main: me.samu.royalbounty.RoyalBounty
+api-version: '1.17'
+commands:
+  bounty:
+    description: Set a bounty on someone's head
+    aliases:
+      - taglia
