@@ -74,12 +74,11 @@ public class TagliaCommand implements CommandExecutor {
             economy.withdrawPlayer(player, quantita);
 
             // Messaggi di successo
-            player.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Set")), target.getName()));
+            player.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Set")).replace("{player}", target.getName())));
 
             for (Player ps : Bukkit.getOnlinePlayers()) {
                 if (ps.hasPermission(permission)) {
-                    ps.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Broadcast")),
-                            target.getName(), quantita));
+                    ps.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Broadcast").replace("{player}", target.getName()).replace("{money}", String.valueOf(quantita)))));
                 }
             }
 

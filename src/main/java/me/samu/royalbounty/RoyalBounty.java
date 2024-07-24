@@ -5,6 +5,7 @@ import me.samu.royalbounty.Database.CustomPlayer;
 import me.samu.royalbounty.Database.Database;
 import me.samu.royalbounty.Database.PlayerManager;
 import me.samu.royalbounty.Listener.ConnectionListener;
+import me.samu.royalbounty.Listener.DeathListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -38,6 +39,7 @@ public final class RoyalBounty extends JavaPlugin {
         playerManager = new PlayerManager();
         // LISTENER
         getServer().getPluginManager().registerEvents(new ConnectionListener(this), this);
+        getServer().getPluginManager().registerEvents(new DeathListener(this), this);
         // VAULT
         if (!setupEconomy() ) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
