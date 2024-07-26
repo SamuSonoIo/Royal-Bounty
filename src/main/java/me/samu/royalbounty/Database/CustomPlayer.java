@@ -11,7 +11,7 @@ public class CustomPlayer {
 
     private UUID uuid;
 
-    private int soldi;
+    private double soldi;
 
     private RoyalBounty royalBounty;
 
@@ -22,7 +22,7 @@ public class CustomPlayer {
         statement.setString(1, uuid.toString());
         ResultSet rs = statement.executeQuery();
         if (rs.next()) {
-            soldi = rs.getInt("SOLDI");
+            soldi = rs.getDouble("SOLDI");
         } else {
             soldi = 0;
             PreparedStatement statement1 = royalBounty.getDatabase().getConnection().prepareStatement("INSERT INTO players (ID, UUID, SOLDI) VALUES(" +
@@ -34,7 +34,7 @@ public class CustomPlayer {
         }
     }
 
-    public void setSoldi(int soldi) {
+    public void setSoldi(double soldi) {
         this.soldi = soldi;
         try {
             PreparedStatement statement = royalBounty.getDatabase().getConnection().prepareStatement("UPDATE players SET SOLDI = " + soldi + " WHERE UUID = '" + uuid + "';");
@@ -44,6 +44,6 @@ public class CustomPlayer {
         }
     }
 
-    public int getSoldi() { return soldi; }
+    public double getSoldi() { return soldi; }
 
 }

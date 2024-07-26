@@ -1,4 +1,4 @@
-package me.samu.royalbounty.Comandi;
+package me.samu.royalbounty.BountyGestore;
 
 import me.samu.royalbounty.Database.CustomPlayer;
 import me.samu.royalbounty.RoyalBounty;
@@ -55,40 +55,50 @@ public class TagliaCommand implements CommandExecutor {
             return true;
         }
 
+
         // Gestione importo
         try {
-            int quantita = Integer.parseInt(args[1]);
+            double quantita = Double.parseDouble(args[1]);
             if (quantita <= 0) {
                 player.sendMessage(Objects.requireNonNull(royalBounty.getConfig().getString("Error-Invalid-Number")));
                 return true;
             }
+
+            if (royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).getSoldi() > 0) {
+                String message = Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Updated-Broadcast"))
+                        .replace("{money}", String.valueOf(quantita))
+                        .replace("{player}", target.getName())
+                        .replace("{allmoney}", String.valueOf(quantita + royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).getSoldi()));
+
+                Bukkit.broadcastMessage(message);
+                royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).setSoldi(
+                        royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).getSoldi() + quantita
+                );
+            } else {
+                String message = Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Broadcast"))
+                        .replace("{money}", String.valueOf(quantita + royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).getSoldi()))
+                        .replace("{player}", target.getName());
+
+                Bukkit.broadcastMessage(message);
+                royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).setSoldi(quantita);
+            }
+
 
             if (economy.getBalance(player) < quantita) {
                 player.sendMessage(Objects.requireNonNull(royalBounty.getConfig().getString("Not-Enough-Money")));
                 return true;
             }
 
-            // Aggiorna il saldo del giocatore e del target
-            CustomPlayer customPlayer = new CustomPlayer(royalBounty, target.getUniqueId());
-            customPlayer.setSoldi(quantita);
+
+            // Aggiorna il saldo del target e il saldo del giocatore
             economy.withdrawPlayer(player, quantita);
 
             // Messaggi di successo
-            player.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Set")).replace("{player}", target.getName())));
-
-            for (Player ps : Bukkit.getOnlinePlayers()) {
-                if (ps.hasPermission(permission)) {
-                    ps.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Broadcast").replace("{player}", target.getName()).replace("{money}", String.valueOf(quantita)))));
-                }
-            }
+            player.sendMessage(String.format(Objects.requireNonNull(royalBounty.getConfig().getString("Bounty-Set")).replace("{player}", target.getName()).replace("{money}", String.valueOf(royalBounty.getPlayerManager().getCustomPlayer(target.getUniqueId()).getSoldi()))));
 
             return true;
         } catch (NumberFormatException e) {
             player.sendMessage(Objects.requireNonNull(royalBounty.getConfig().getString("Error-Invalid-Number")));
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            player.sendMessage("Errore durante l'aggiornamento del database.");
             return true;
         }
     }

@@ -1,4 +1,4 @@
-package me.samu.royalbounty.Listener;
+package me.samu.royalbounty.DataListener;
 
 import me.samu.royalbounty.Database.CustomPlayer;
 import me.samu.royalbounty.RoyalBounty;
